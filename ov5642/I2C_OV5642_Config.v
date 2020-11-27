@@ -1,0 +1,386 @@
+module I2C_OV5642_Config #(
+	parameter NUM_BYTE = 3,
+	parameter SLAVE_ADDR = 8'h78
+)
+(	//	Host Side
+					iCLK,
+					iRST_N,
+					//	I2C Side
+					I2C_SCLK,
+					I2C_SDAT,
+					HDMI_TX_INT,
+					READY
+					 );
+//	Host Side
+input				iCLK;
+input				iRST_N;
+//	I2C Side
+output			I2C_SCLK;
+inout				I2C_SDAT;
+input				HDMI_TX_INT;
+output 			READY; 
+
+//	Internal Registers/Wires
+reg	[15:0]						mI2C_CLK_DIV;
+reg	[(NUM_BYTE+1)*8-1:0]		mI2C_DATA;
+reg									mI2C_CTRL_CLK;
+reg									mI2C_GO;
+wire									mI2C_END;
+wire									mI2C_ACK;
+reg	[NUM_BYTE*8-1:0]			LUT_DATA;
+reg	[31:0]						LUT_INDEX;
+reg	[3:0]							mSetup_ST;
+reg 									READY ; 
+
+//	Clock Setting
+localparam	CLK_Freq	=	50000000;	//	50	MHz
+localparam	I2C_Freq	=	200000;		//	200	KHz
+//	LUT Data Number
+localparam	LUT_SIZE	=	131;
+
+/////////////////////	I2C Control Clock	////////////////////////
+always@(posedge iCLK or negedge iRST_N)
+begin
+	if(!iRST_N)
+	begin
+		mI2C_CTRL_CLK	<=	0;
+		mI2C_CLK_DIV	<=	0;
+	end
+	else
+	begin
+		if( mI2C_CLK_DIV	< (CLK_Freq/I2C_Freq) )
+			mI2C_CLK_DIV	<=	mI2C_CLK_DIV + 1'b1;
+		else
+		begin
+			mI2C_CLK_DIV	<=	0;
+			mI2C_CTRL_CLK	<=	~mI2C_CTRL_CLK;
+		end
+	end
+end
+
+I2C_OV5642_Controller #(.NUM_BYTE(NUM_BYTE))	u0	(	.CLOCK(mI2C_CTRL_CLK),	//	Controller Work Clock
+						.I2C_SCLK(I2C_SCLK),				//	I2C CLOCK
+ 	 	 	 	 	 	.I2C_SDAT(I2C_SDAT),				//	I2C DATA
+						.I2C_DATA(mI2C_DATA),			//	DATA:[SLAVE_ADDR,SUB_ADDR,DATA]
+						.GO(mI2C_GO),						//	GO transfor
+						.END(mI2C_END),					//	END transfor 
+						.ACK(mI2C_ACK),					//	ACK
+						.RESET(iRST_N),
+						.READY(READY)
+						);
+
+//////////////////////	Config Control	////////////////////////////
+always@(posedge mI2C_CTRL_CLK or negedge iRST_N)
+begin
+	if(!iRST_N)
+	begin
+	READY<=0;
+		LUT_INDEX	<=	0;
+		mSetup_ST	<=	0;
+		mI2C_GO		<=	0;
+	end
+	else
+	begin
+		if(LUT_INDEX<LUT_SIZE)
+		begin
+		READY<=0;
+			case(mSetup_ST)
+			0:	begin
+					mI2C_DATA	<=	{SLAVE_ADDR, LUT_DATA};
+					mI2C_GO		<=	1;
+					mSetup_ST	<=	1;
+				end
+			1:	begin
+					if(mI2C_END)
+					begin
+						if(!mI2C_ACK)
+						mSetup_ST	<=	2;
+						else
+						mSetup_ST	<=	0;							
+						mI2C_GO		<=	0;
+					end
+				end
+			2:	begin
+					LUT_INDEX	<=	LUT_INDEX + 1'b1;
+					mSetup_ST	<=	0;
+				end
+			endcase
+		end
+		else
+		begin
+		  READY<=1; 
+		  if(!HDMI_TX_INT)
+		  begin
+		    LUT_INDEX <= 0;
+		  end
+		  else
+		    LUT_INDEX <= LUT_INDEX;
+		end
+	end
+end
+////////////////////////////////////////////////////////////////////
+
+always begin
+	case(LUT_INDEX)
+		0: 	LUT_DATA	<=	24'h300880; //reset
+		1:		LUT_DATA	<=	24'h310303;
+		2:		LUT_DATA	<=	24'h300882;
+		3:		LUT_DATA	<=	24'h30177f;
+		4:		LUT_DATA	<=	24'h3018fc;
+		5:		LUT_DATA	<=	24'h3810c2;
+		6:		LUT_DATA	<=	24'h3615f0;
+		7:		LUT_DATA	<=	24'h300000;
+		8:		LUT_DATA	<=	24'h300100;
+		9:		LUT_DATA	<=	24'h300200;
+		10:	LUT_DATA	<=	24'h300300;
+		11:	LUT_DATA	<=	24'h301108;
+		12:	LUT_DATA	<=	24'h301030;
+		13:	LUT_DATA	<=	24'h360460;
+		14:	LUT_DATA	<=	24'h362208;
+		15:	LUT_DATA	<=	24'h362117; //duplicate
+		16:	LUT_DATA	<=	24'h370900;
+		17:	LUT_DATA	<=	24'h400021;
+		18:	LUT_DATA	<=	24'h401d02;
+		19:	LUT_DATA	<=	24'h360054;
+		20:	LUT_DATA	<=	24'h360504;
+		21:	LUT_DATA	<=	24'h36063f;
+		22:	LUT_DATA	<=	24'h3c0180;
+		23:	LUT_DATA	<=	24'h300d21;
+		24:	LUT_DATA	<=	24'h362322;
+		25:	LUT_DATA	<=	24'h5000cf;  //duplicate
+		26:	LUT_DATA	<=	24'h502004;
+		27:	LUT_DATA	<=	24'h518179;
+		28:	LUT_DATA	<=	24'h518200;
+		29:	LUT_DATA	<=	24'h518522;
+		30:	LUT_DATA	<=	24'h519701;
+		31:	LUT_DATA	<=	24'h55000a;
+		32:	LUT_DATA	<=	24'h550400;
+		33:	LUT_DATA	<=	24'h55057f;
+		34:	LUT_DATA	<=	24'h508008;
+		35:	LUT_DATA	<=	24'h300e18;
+		36:	LUT_DATA	<=	24'h461000;
+		37:	LUT_DATA	<=	24'h471d05;
+		38:	LUT_DATA	<=	24'h470806;
+		39:	LUT_DATA	<=	24'h371010;
+		40:	LUT_DATA	<=	24'h370d06; //duplicate
+		41:	LUT_DATA	<=	24'h363241;
+		42:	LUT_DATA	<=	24'h370240;
+		43:	LUT_DATA	<=	24'h362037; //duplicate
+		44:	LUT_DATA	<=	24'h363101;
+		45:	LUT_DATA	<=	24'h370ca0;
+		46:	LUT_DATA	<=	24'h380805; //duplicate
+		47:	LUT_DATA	<=	24'h380900; //duplicate
+		48:	LUT_DATA	<=	24'h380a03; //duplicate
+		49:	LUT_DATA	<=	24'h380bc0; //duplicate
+		50:	LUT_DATA	<=	24'h380c0c;
+		51:	LUT_DATA	<=	24'h380d80;
+		52:	LUT_DATA	<=	24'h380e07;
+		53:	LUT_DATA	<=	24'h380fd0;
+		54:	LUT_DATA	<=	24'h500006; //duplicate
+		55:	LUT_DATA	<=	24'h501f04; //format mux control
+		56:	LUT_DATA	<=	24'h350307; //duplicate
+		57:	LUT_DATA	<=	24'h350173; //duplicate
+		58:	LUT_DATA	<=	24'h350280; //duplicate
+		59:	LUT_DATA	<=	24'h350b00; //duplicate
+		60:	LUT_DATA	<=	24'h3818c0; //duplicate
+		61:	LUT_DATA	<=	24'h362127; //duplicate
+		62:	LUT_DATA	<=	24'h38018a; //duplicate
+		63:	LUT_DATA	<=	24'h3a0078; //duplicate
+		64:	LUT_DATA	<=	24'h3a1a04; //AEC control register
+		65:	LUT_DATA	<=	24'h3a1330; //AEC control
+		66:	LUT_DATA	<=	24'h3a1800; //Gain output to top limit
+		67:	LUT_DATA	<=	24'h3a197c; //Gain output to top limit
+		68:	LUT_DATA	<=	24'h3a0812; //duplicate
+		69:	LUT_DATA	<=	24'h3a09c0; //duplicate
+		70:	LUT_DATA	<=	24'h3a0a0f; //duplicate
+		71:	LUT_DATA	<=	24'h3a0ba0; //duplicate
+		72:	LUT_DATA	<=	24'h3004ff; //clock enable control
+		73:	LUT_DATA	<=	24'h350c07; //AEC VTS output
+		74:	LUT_DATA	<=	24'h350dd0; //AEC VTS output
+		75:	LUT_DATA	<=	24'h3a0d08; //duplicate
+		76:	LUT_DATA	<=	24'h3a0e06; //duplicate
+		77:	LUT_DATA	<=	24'h350000; //long channel exposure output
+		78:	LUT_DATA	<=	24'h350100; //long channel exposure output
+		79:	LUT_DATA	<=	24'h350200; //long channel exposure output
+		80:	LUT_DATA	<=	24'h350a00; //Gain output to sensor
+		81:	LUT_DATA	<=	24'h350b00; //Gain output to sensor
+		82:	LUT_DATA	<=	24'h350300; //AEC manual mode control
+		83:	LUT_DATA	<=	24'h30302b; //PWC control
+		84:	LUT_DATA	<=	24'h3a0200; //60Hz maximum exposure output limit
+		85:	LUT_DATA	<=	24'h3a037d; //60Hz maximum exposure output limit
+		86:	LUT_DATA	<=	24'h3a0400; //60Hz maximum exposure output limit
+		87:	LUT_DATA	<=	24'h3a1400; //50Hz maximum exposure output limit
+		88:	LUT_DATA	<=	24'h3a157d; //50Hz maximum exposure output limit
+		89:	LUT_DATA	<=	24'h3a1600; //50Hz maximum exposure output limit
+		90:	LUT_DATA	<=	24'h3a0078; //AEC control
+		91:	LUT_DATA	<=	24'h3a0809; //banding filter
+		92:	LUT_DATA	<=	24'h3a0960; //banding filter
+		93:	LUT_DATA	<=	24'h3a0a07; //banding filter
+		94:	LUT_DATA	<=	24'h3a0bd0; //banding filter
+		95:	LUT_DATA	<=	24'h3a0d10; //banding filter
+		96:	LUT_DATA	<=	24'h3a0e0d; //banding filter
+		97:	LUT_DATA	<=	24'h362057; //duplicate
+		98:	LUT_DATA	<=	24'h370398; //analog control
+		99:	LUT_DATA	<=	24'h37041c; //analog control
+		100:	LUT_DATA	<=	24'h589b00;
+		101:	LUT_DATA	<=	24'h589ac0;
+		102:	LUT_DATA	<=	24'h363307; //analog control
+		103:	LUT_DATA	<=	24'h370210; //analog control
+		104:	LUT_DATA	<=	24'h3703b2; //analog control
+		105:	LUT_DATA	<=	24'h370418; //analog control
+		106:	LUT_DATA	<=	24'h370b40; //analog control
+		107:	LUT_DATA	<=	24'h370d02; //analog control D
+		108:	LUT_DATA	<=	24'h362052; //analog control
+		109:	LUT_DATA	<=	24'h500000;
+		110:	LUT_DATA	<=	24'h500100;
+		111:	LUT_DATA	<=	24'h500500;  
+		112:	LUT_DATA	<=	24'h381880; //unknow
+		113:	LUT_DATA	<=	24'h362117; //unknow
+		114:	LUT_DATA	<=	24'h3801B4; //HS start point
+		115:	LUT_DATA	<=	24'h380807; //Timing DVPHO
+		116:	LUT_DATA	<=	24'h380980; //Timing DVPHO
+		117:	LUT_DATA	<=	24'h380a04; //Timing DVPVO
+		118:	LUT_DATA	<=	24'h380b38; //Timing DVPVO
+		119:	LUT_DATA	<=	24'h380c0c; //Timing HTS
+		120:	LUT_DATA	<=	24'h380d80; //Timing HTS
+		121:	LUT_DATA	<=	24'h380e07; //Timing VTS
+		122:	LUT_DATA	<=	24'h380fd0; //Timing HTS
+		123:	LUT_DATA	<=	24'h50017f; //ISP control
+		//Clock speed, 24Mhz XCLK, 48MHz PCLK
+		124:	LUT_DATA	<=	24'h301108; //PLL DIVP = 8
+		125:	LUT_DATA	<=	24'h301200; //PLL pre-divider ratio
+		126:	LUT_DATA	<=	24'h301010; //PLL DIVS = 1, DIVM = 0
+		127:	LUT_DATA	<=	24'h460c22; //set PCLK to manual control
+		128:	LUT_DATA	<=	24'h381502; //set PCLK 
+		
+		129:	LUT_DATA	<=	24'h501f03;
+		130:	LUT_DATA	<=	24'h430002;
+		
+//		131:	LUT_DATA	<=	24'h380001; //HS start point
+//		132:	LUT_DATA	<=	24'h380160; //HS start point
+//		133:	LUT_DATA	<=	24'h380201; //VS start point
+//		134:	LUT_DATA	<=	24'h3803BA; //VS start point
+		
+//0 : 	LUT_DATA	<=	24'h310303;
+//1 : 	LUT_DATA	<=	24'h300882;
+//2 : 	LUT_DATA	<=	24'h30177f;
+//3 : 	LUT_DATA	<=	24'h3018fc;
+//4 : 	LUT_DATA	<=	24'h3810c2;
+//5 : 	LUT_DATA	<=	24'h3615f0;
+//6 : 	LUT_DATA	<=	24'h300000;
+//7 : 	LUT_DATA	<=	24'h300100;
+//8 : 	LUT_DATA	<=	24'h300200;
+//9 : 	LUT_DATA	<=	24'h300300;
+//10 : 	LUT_DATA	<=	24'h301108;
+//11 : 	LUT_DATA	<=	24'h301030;
+//12 : 	LUT_DATA	<=	24'h360460;
+//13 : 	LUT_DATA	<=	24'h362208;
+//14 : 	LUT_DATA	<=	24'h362117;
+//15 : 	LUT_DATA	<=	24'h370900;
+//16 : 	LUT_DATA	<=	24'h400021;
+//17 : 	LUT_DATA	<=	24'h401d02;
+//18 : 	LUT_DATA	<=	24'h360054;
+//19 : 	LUT_DATA	<=	24'h360504;
+//20 : 	LUT_DATA	<=	24'h36063f;
+//21 : 	LUT_DATA	<=	24'h3c0180;
+//22 : 	LUT_DATA	<=	24'h300d21;
+//23 : 	LUT_DATA	<=	24'h362322;
+//24 : 	LUT_DATA	<=	24'h5000cf;
+//25 : 	LUT_DATA	<=	24'h502004;
+//26 : 	LUT_DATA	<=	24'h518179;
+//27 : 	LUT_DATA	<=	24'h518200;
+//28 : 	LUT_DATA	<=	24'h518522;
+//29 : 	LUT_DATA	<=	24'h519701;
+//30 : 	LUT_DATA	<=	24'h55000a;
+//31 : 	LUT_DATA	<=	24'h550400;
+//32 : 	LUT_DATA	<=	24'h55057f;
+//33 : 	LUT_DATA	<=	24'h508008;
+//34 : 	LUT_DATA	<=	24'h300e18;
+//35 : 	LUT_DATA	<=	24'h461000;
+//36 : 	LUT_DATA	<=	24'h471d05;
+//37 : 	LUT_DATA	<=	24'h470806;
+//38 : 	LUT_DATA	<=	24'h371010;
+//39 : 	LUT_DATA	<=	24'h370d06;
+//40 : 	LUT_DATA	<=	24'h363241;
+//41 : 	LUT_DATA	<=	24'h370240;
+//42 : 	LUT_DATA	<=	24'h362037;
+//43 : 	LUT_DATA	<=	24'h363101;
+//44 : 	LUT_DATA	<=	24'h370ca0;
+//45 : 	LUT_DATA	<=	24'h380807;
+//46 : 	LUT_DATA	<=	24'h380980;
+//47 : 	LUT_DATA	<=	24'h380a04;
+//48 : 	LUT_DATA	<=	24'h380b38;
+//49 : 	LUT_DATA	<=	24'h380c0c;
+//50 : 	LUT_DATA	<=	24'h380d80;
+//51 : 	LUT_DATA	<=	24'h380e07;
+//52 : 	LUT_DATA	<=	24'h380fd0;
+//53 : 	LUT_DATA	<=	24'h500006;
+//54 : 	LUT_DATA	<=	24'h501f03;
+//55 : 	LUT_DATA	<=	24'h350307;
+//56 : 	LUT_DATA	<=	24'h350173;
+//57 : 	LUT_DATA	<=	24'h350280;
+//58 : 	LUT_DATA	<=	24'h350b00;
+//59 : 	LUT_DATA	<=	24'h3818c0;
+//60 : 	LUT_DATA	<=	24'h362127;
+//61 : 	LUT_DATA	<=	24'h38018a;
+//62 : 	LUT_DATA	<=	24'h3a0078;
+//63 : 	LUT_DATA	<=	24'h3a1a04;
+//64 : 	LUT_DATA	<=	24'h3a1330;
+//65 : 	LUT_DATA	<=	24'h3a1800;
+//66 : 	LUT_DATA	<=	24'h3a197c;
+//67 : 	LUT_DATA	<=	24'h3a0812;
+//68 : 	LUT_DATA	<=	24'h3a09c0;
+//69 : 	LUT_DATA	<=	24'h3a0a0f;
+//70 : 	LUT_DATA	<=	24'h3a0ba0;
+//71 : 	LUT_DATA	<=	24'h3004ff;
+//72 : 	LUT_DATA	<=	24'h350c07;
+//73 : 	LUT_DATA	<=	24'h350dd0;
+//74 : 	LUT_DATA	<=	24'h3a0d08;
+//75 : 	LUT_DATA	<=	24'h3a0e06;
+//76 : 	LUT_DATA	<=	24'h350000;
+//77 : 	LUT_DATA	<=	24'h350100;
+//78 : 	LUT_DATA	<=	24'h350200;
+//79 : 	LUT_DATA	<=	24'h350a00;
+//80 : 	LUT_DATA	<=	24'h350b00;
+//81 : 	LUT_DATA	<=	24'h350300;
+//82 : 	LUT_DATA	<=	24'h30302b;
+//83 : 	LUT_DATA	<=	24'h3a0200;
+//84 : 	LUT_DATA	<=	24'h3a037d;
+//85 : 	LUT_DATA	<=	24'h3a0400;
+//86 : 	LUT_DATA	<=	24'h3a1400;
+//87 : 	LUT_DATA	<=	24'h3a157d;
+//88 : 	LUT_DATA	<=	24'h3a1600;
+//89 : 	LUT_DATA	<=	24'h3a0078;
+//90 : 	LUT_DATA	<=	24'h3a0809;
+//91 : 	LUT_DATA	<=	24'h3a0960;
+//92 : 	LUT_DATA	<=	24'h3a0a07;
+//93 : 	LUT_DATA	<=	24'h3a0bd0;
+//94 : 	LUT_DATA	<=	24'h3a0d10;
+//95 : 	LUT_DATA	<=	24'h3a0e0d;
+//96 : 	LUT_DATA	<=	24'h362057;
+//97 : 	LUT_DATA	<=	24'h370398;
+//98 : 	LUT_DATA	<=	24'h37041c;
+//99 : 	LUT_DATA	<=	24'h589b00;
+//100 : 	LUT_DATA	<=	24'h589ac0;
+//101 : 	LUT_DATA	<=	24'h363307;
+//102 : 	LUT_DATA	<=	24'h370210;
+//103 : 	LUT_DATA	<=	24'h3703b2;
+//104 : 	LUT_DATA	<=	24'h370418;
+//105 : 	LUT_DATA	<=	24'h370b40;
+//106 : 	LUT_DATA	<=	24'h370d02;
+//107 : 	LUT_DATA	<=	24'h362052;
+//108 : 	LUT_DATA	<=	24'h500006;
+//109 : 	LUT_DATA	<=	24'h500101;
+//110 : 	LUT_DATA	<=	24'h500500;
+//111 : 	LUT_DATA	<=	24'h381880;
+//112 : 	LUT_DATA	<=	24'h362117;
+//113 : 	LUT_DATA	<=	24'h3801b4; 
+//114 : 	LUT_DATA	<=	24'hffffff;
+
+
+		default:		LUT_DATA	<=	24'hffffff;
+	
+	endcase
+end
+
+endmodule

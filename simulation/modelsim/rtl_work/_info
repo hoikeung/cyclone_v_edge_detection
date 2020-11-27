@@ -1,0 +1,168 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/Desktop/OV5642_1080P/simulation/modelsim
+vadd
+Z1 !s110 1606131983
+!i10b 1
+!s100 F9S_U<NzD44L3Z5=Kdl`C3
+I`PeAUMWB::m@8J89RL0^X0
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1606056817
+8D:/Desktop/OV5642_1080P/edge_detection/add.v
+FD:/Desktop/OV5642_1080P/edge_detection/add.v
+Z3 L0 39
+Z4 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z5 !s108 1606131983.000000
+!s107 D:/Desktop/OV5642_1080P/edge_detection/add.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+D:/Desktop/OV5642_1080P/edge_detection|D:/Desktop/OV5642_1080P/edge_detection/add.v|
+!i113 1
+Z6 o-vlog01compat -work work
+Z7 !s92 -vlog01compat -work work +incdir+D:/Desktop/OV5642_1080P/edge_detection
+Z8 tCvgOpt 0
+vDE10_Nano_D8M_DDR3
+R1
+!i10b 1
+!s100 lc8T:738QI352fbB1hN9>3
+I<6L[jk[zBFNa93EfTHVa83
+R2
+R0
+w1606119367
+8D:/Desktop/OV5642_1080P/de10_nano_d8m_ddr3.v
+FD:/Desktop/OV5642_1080P/de10_nano_d8m_ddr3.v
+L0 268
+R4
+r1
+!s85 0
+31
+R5
+!s107 D:/Desktop/OV5642_1080P/de10_nano_d8m_ddr3.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+D:/Desktop/OV5642_1080P|D:/Desktop/OV5642_1080P/de10_nano_d8m_ddr3.v|
+!i113 1
+R6
+!s92 -vlog01compat -work work +incdir+D:/Desktop/OV5642_1080P
+R8
+n@d@e10_@nano_@d8@m_@d@d@r3
+vedge_detection
+R1
+!i10b 1
+!s100 MgLPTDjb]RZzAL91[Zljo2
+IkbeJ6aV5mf;_ZOdId;_F^1
+R2
+R0
+w1606131966
+8D:/Desktop/OV5642_1080P/edge_detection/edge_detection.v
+FD:/Desktop/OV5642_1080P/edge_detection/edge_detection.v
+L0 2
+R4
+r1
+!s85 0
+31
+R5
+!s107 D:/Desktop/OV5642_1080P/edge_detection/edge_detection.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+D:/Desktop/OV5642_1080P/edge_detection|D:/Desktop/OV5642_1080P/edge_detection/edge_detection.v|
+!i113 1
+R6
+R7
+R8
+vshift_register
+R1
+!i10b 1
+!s100 ;A:hJJM<]A03;@5f<Wg;Z1
+I=;9`zNgo=_VzJWJ:gzZBn1
+R2
+R0
+w1606050739
+8D:/Desktop/OV5642_1080P/edge_detection/shift_register.v
+FD:/Desktop/OV5642_1080P/edge_detection/shift_register.v
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 D:/Desktop/OV5642_1080P/edge_detection/shift_register.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+D:/Desktop/OV5642_1080P/edge_detection|D:/Desktop/OV5642_1080P/edge_detection/shift_register.v|
+!i113 1
+R6
+R7
+R8
+vsqrt
+Z9 !s110 1606131984
+!i10b 1
+!s100 3bXGl7=9jcMORC5<ZebTO3
+I=bYM4;WElShXB^`Rde?Je2
+R2
+R0
+w1606056583
+8D:/Desktop/OV5642_1080P/edge_detection/sqrt.v
+FD:/Desktop/OV5642_1080P/edge_detection/sqrt.v
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 D:/Desktop/OV5642_1080P/edge_detection/sqrt.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+D:/Desktop/OV5642_1080P/edge_detection|D:/Desktop/OV5642_1080P/edge_detection/sqrt.v|
+!i113 1
+R6
+R7
+R8
+vsquare
+R9
+!i10b 1
+!s100 W3eTlG[MIWK46`W:jAQhB1
+IdkkJgfz:CKijA=XSWNbFE1
+R2
+R0
+w1606063479
+8D:/Desktop/OV5642_1080P/edge_detection/square.v
+FD:/Desktop/OV5642_1080P/edge_detection/square.v
+R3
+R4
+r1
+!s85 0
+31
+!s108 1606131984.000000
+!s107 D:/Desktop/OV5642_1080P/edge_detection/square.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+D:/Desktop/OV5642_1080P/edge_detection|D:/Desktop/OV5642_1080P/edge_detection/square.v|
+!i113 1
+R6
+R7
+R8
+vtb_edge_detection
+DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
+R1
+!i10b 1
+!s100 5WK3?zUSiT@XiWH0Qf1C=3
+IoI1:fJ3FPLDZKjk3GH@b40
+R2
+!s105 tb_edge_detection_sv_unit
+S1
+R0
+w1606098295
+8D:/Desktop/OV5642_1080P/testbench/tb_edge_detection.sv
+FD:/Desktop/OV5642_1080P/testbench/tb_edge_detection.sv
+L0 3
+R4
+r1
+!s85 0
+31
+R5
+!s107 D:/Desktop/OV5642_1080P/testbench/tb_edge_detection.sv|
+!s90 -reportprogress|300|-sv|-work|work|+incdir+D:/Desktop/OV5642_1080P/testbench|D:/Desktop/OV5642_1080P/testbench/tb_edge_detection.sv|
+!i113 1
+o-sv -work work
+!s92 -sv -work work +incdir+D:/Desktop/OV5642_1080P/testbench
+R8

@@ -1,0 +1,20 @@
+Fitter Status : Successful - Fri Nov 27 09:20:50 2020
+Quartus Prime Version : 18.1.0 Build 625 09/12/2018 SJ Lite Edition
+Revision Name : cyclone_v_edge_detection
+Top-level Entity Name : cyclone_v_edge_detection
+Family : Cyclone V
+Device : 5CSEBA6U23I7
+Timing Models : Final
+Logic utilization (in ALMs) : 2,923 / 41,910 ( 7 % )
+Total registers : 5151
+Total pins : 189 / 314 ( 60 % )
+Total virtual pins : 0
+Total block memory bits : 580,550 / 5,662,720 ( 10 % )
+Total RAM Blocks : 73 / 553 ( 13 % )
+Total DSP Blocks : 3 / 112 ( 3 % )
+Total HSSI RX PCSs : 0
+Total HSSI PMA RX Deserializers : 0
+Total HSSI TX PCSs : 0
+Total HSSI PMA TX Serializers : 0
+Total PLLs : 2 / 6 ( 33 % )
+Total DLLs : 1 / 4 ( 25 % )

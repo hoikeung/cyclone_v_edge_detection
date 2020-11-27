@@ -1,0 +1,124 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/Desktop/OV5642_1080P/simulation/modelsim
+vBayer2RGB
+Z1 !s110 1606119579
+!i10b 1
+!s100 >7jUOXjVngU;K5_4Ga^;i1
+IFI2UKEiUL]kjUCLLi5eCK0
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1606119270
+8d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/bayer2rgb.v
+Fd:/desktop/ov5642_1080p/db/ip/soc_system/submodules/bayer2rgb.v
+L0 27
+Z3 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z4 !s108 1606119579.000000
+!s107 d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/bayer2rgb.v|
+!s90 -reportprogress|300|-vlog01compat|-work|soc_system|+incdir+d:/desktop/ov5642_1080p/db/ip/soc_system/submodules|d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/bayer2rgb.v|
+!i113 1
+Z5 o-vlog01compat -work soc_system
+Z6 !s92 -vlog01compat -work soc_system +incdir+d:/desktop/ov5642_1080p/db/ip/soc_system/submodules
+Z7 tCvgOpt 0
+n@bayer2@r@g@b
+vBayer_LineBuffer
+R1
+!i10b 1
+!s100 ^3[KfjC_DRmERF8ZzKLM00
+IbXWC]G67a5JOcoZnbEjjT0
+R2
+R0
+Z8 w1606118747
+8d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/bayer_linebuffer.v
+Fd:/desktop/ov5642_1080p/db/ip/soc_system/submodules/bayer_linebuffer.v
+L0 40
+R3
+r1
+!s85 0
+31
+R4
+!s107 d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/bayer_linebuffer.v|
+!s90 -reportprogress|300|-vlog01compat|-work|soc_system|+incdir+d:/desktop/ov5642_1080p/db/ip/soc_system/submodules|d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/bayer_linebuffer.v|
+!i113 1
+R5
+R6
+R7
+n@bayer_@line@buffer
+vCAMERA_Bayer
+R1
+!i10b 1
+!s100 69Lj^GSoH_A6[ADhLQ;T=1
+IOHF:6QRY?LzhT`6g>L?PH2
+R2
+R0
+w1606119273
+8d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/camera_bayer.v
+Fd:/desktop/ov5642_1080p/db/ip/soc_system/submodules/camera_bayer.v
+L0 1
+R3
+r1
+!s85 0
+31
+R4
+!s107 d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/camera_bayer.v|
+!s90 -reportprogress|300|-vlog01compat|-work|soc_system|+incdir+d:/desktop/ov5642_1080p/db/ip/soc_system/submodules|d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/camera_bayer.v|
+!i113 1
+R5
+R6
+R7
+n@c@a@m@e@r@a_@bayer
+vCAMERA_RGB
+R1
+!i10b 1
+!s100 0z;okGehgIj08[_l[Pe>C3
+IcnUNOc2CA_[G1o678VcMQ3
+R2
+R0
+R8
+8d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/camera_rgb.v
+Fd:/desktop/ov5642_1080p/db/ip/soc_system/submodules/camera_rgb.v
+L0 1
+R3
+r1
+!s85 0
+31
+R4
+!s107 d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/camera_rgb.v|
+!s90 -reportprogress|300|-vlog01compat|-work|soc_system|+incdir+d:/desktop/ov5642_1080p/db/ip/soc_system/submodules|d:/desktop/ov5642_1080p/db/ip/soc_system/submodules/camera_rgb.v|
+!i113 1
+R5
+R6
+R7
+n@c@a@m@e@r@a_@r@g@b
+vsoc_system
+R1
+!i10b 1
+!s100 5@6c_>JX_9:[S_LJB1:U30
+IfN6lS;Jo[28FM[<_iDDQW0
+R2
+R0
+R8
+8d:/desktop/ov5642_1080p/db/ip/soc_system/soc_system.v
+Fd:/desktop/ov5642_1080p/db/ip/soc_system/soc_system.v
+L0 6
+R3
+r1
+!s85 0
+31
+R4
+!s107 d:/desktop/ov5642_1080p/db/ip/soc_system/soc_system.v|
+!s90 -reportprogress|300|-vlog01compat|-work|soc_system|+incdir+d:/desktop/ov5642_1080p/db/ip/soc_system|d:/desktop/ov5642_1080p/db/ip/soc_system/soc_system.v|
+!i113 1
+R5
+!s92 -vlog01compat -work soc_system +incdir+d:/desktop/ov5642_1080p/db/ip/soc_system
+R7
